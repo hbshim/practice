@@ -6,10 +6,11 @@ from flask import Flask, g, Response, request
 from neo4j.v1 import GraphDatabase, basic_auth
 
 app = Flask(__name__, static_url_path='/static/')
+#app = Flask(__name__, static_url_path='/')
 
-password = os.getenv("NEO4J_PASSWORD")
+#password = os.getenv("NEO4J_PASSWORD")
 
-driver = GraphDatabase.driver('bolt://localhost',auth=basic_auth("neo4j", password))
+driver = GraphDatabase.driver('bolt://localhost',auth=basic_auth("neo4j","&js2T(6~y3J!P$RhWWDo@~X"))
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
@@ -24,6 +25,7 @@ def close_db(error):
 @app.route("/")
 def get_index():
     return app.send_static_file('index.html')
+#    return app.render_template('index.html')
 
 def serialize_movie(movie):
     return {
@@ -46,28 +48,19 @@ def serialize_cast(cast):
 @app.route("/graph")
 def get_graph():
     db = get_db()
-    results = db.run("MATCH (m:Movie)<-[r:ACTED_IN]-(a:Person) "
-             "RETURN m.title as movie, collect(a.name) as cast, TYPE(r) as label "
-             "LIMIT {limit}", {"limit": request.args.get("limit", 100)})
+    # OPTIONAL MATCH (m)-[r]->() 
+    # RETURN m.name as name, m.tag as tag, m.ref as ref, labels(m) as label, TYPE(r) as type, m.date as nodeDate, r.date as relDate, r.name as relName
+    # local ring:Algebraic geometry: 35GM6f8, local ring:Algebra: 35GM6f8
+    #results = db.run("MATCH (n) RETURN n.uuid as uuid, n.name as name, labels(n) as labels"
+             #"LIMIT {limit}", {"limit": request.args.get("limit", 100)})
     nodes = []
+    for record in db.run("MATCH (n) RETURN n.uuid as uuid, n.name as name, labels(n) as labels"):
+        nodes.append({"uuid": record["uuid"], "name": record["name"], "labels": record["labels"]})
     rels = []
-    i = 0
-    for record in results:
-        nodes.append({"title": record["movie"], "label": "movie"})
-        target = i
-        i += 1
-        for name in record['cast']:
-            actor = {"title": name, "label": "actor"}
-            try:
-                source = nodes.index(actor)
-            except ValueError:
-                nodes.append(actor)
-                source = i
-                i += 1
-            rels.append({"source": source, "target": target, "label": record["label"]})
+    for record in db.run("MATCH (n)-[r]->(m) RETURN n.uuid as source, r.uuid as uuid, m.uuid as target, r.name as name, type(r) as type"):
+        rels.append({"uuid": record["uuid"], "source": record["source"], "target": record["target"], "name": record["name"], "type": record["type"]})
     return Response(dumps({"nodes": nodes, "links": rels}),
                     mimetype="application/json")
-
 
 @app.route("/search")
 def get_search():
