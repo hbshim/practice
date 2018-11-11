@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import os
 from json import dumps
-from flask import Flask, g, Response, request
+from flask import Flask, g, Response, request, render_template
 
-from neo4j.v1 import GraphDatabase, basic_auth
+from neo4j import GraphDatabase, basic_auth
 
 app = Flask(__name__, static_url_path='/static/')
 #app = Flask(__name__, static_url_path='/')
+# Set debug mode
+app.debug = True
 
 #password = os.getenv("NEO4J_PASSWORD")
 
@@ -24,8 +26,7 @@ def close_db(error):
 
 @app.route("/")
 def get_index():
-    return app.send_static_file('index.html')
-#    return app.render_template('index.html')
+   return render_template('index.html')
 
 def serialize_movie(movie):
     return {
