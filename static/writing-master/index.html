@@ -1,0 +1,92 @@
+<!-- 
+#    
+# Writing is an in-browser text editor, supporting LaTeX (MathJax) and Markdown, designed to be lightweight and, unlike some other similar solutions, 
+#           fast to display (no delay when writing, no flickering when writing math), as close as possible to the math.stackexchange.com editor.
+# 
+# author:   Joseph Ernest (twitter: @JosephErnest)
+# url:      https://github.com/josephernest/writing
+# license:  MIT license
+# based on: Pagedown (https://code.google.com/archive/p/pagedown/, https://github.com/balpha/pagedown)
+#           Pagedown Extra (https://github.com/jmcmanus/pagedown-extra)
+#           MathJax (https://www.mathjax.org/)
+#           StackOverflow's editor (https://gist.github.com/gdalgas/a652bce3a173ddc59f66)
+#
+-->
+
+<!DOCTYPE html>
+<html class="fixedheight texroman">
+
+<head>
+    <link rel="icon" href="favicon.ico" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Writing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="editor.css">>
+</head>
+
+<body class="fixedheight">
+    <script type="text/javascript" src="Markdown.Converter.js"></script>
+    <script type="text/javascript" src="Markdown.Sanitizer.js"></script>
+    <script type="text/javascript" src="Markdown.Editor.js"></script>
+    <script type="text/javascript" src="Markdown.Extra.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML-full"></script>
+    <script type="text/javascript" src="mathjax-editing_writing.js"></script>
+    <!-- <script type="text/javascript" src="jspdf.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <input id="openFileInput" type="file" />
+    <div id="wmd-button-bar" class="wmd-button-bar"></div>
+    <textarea id="wmd-input" class="column wmd-input" spellcheck="false"></textarea>
+    <div id="wmd-preview" class="column wmd-preview">
+        <noscript>This text editor requires JavaScript.</noscript>
+    </div>
+    <div id="helpicon" class="unselectable">?</div>
+    <div id="help">
+        <div id="closeicon" class="unselectable">X</div>
+        <pre>
+<a href="https://github.com/josephernest/writing">Writing</a> is a lightweight distraction-free text editor.
+Write text on the left, and the result is displayed on the right.
+
+Commands
+--------
+CTRL + D: toggle display mode (editor only, preview only or both-at-the-same-time)
+CTRL + P: print or export as PDF
+CTRL + S: save source code as .MD file
+CTRL + SHIFT + O: open .MD file
+
+CTRL + SHIFT + L: enable / disable LaTeX (i.e. math formulas)
+CTRL + SHIFT + D: toggle dark mode
+CTRL + SHIFT + R: toggle roman (LaTex-like) or sans-serif font
+CTRL + SHIFT + H: show this help dialog
+
+F11: full-screen (in most browsers)
+
+Markdown syntax
+---------------
+#Title
+##Subtitle
+This is *italic* and this is **bold**.
+This is a [link](http://www.example.com/) and this is an ![image](imagelink.jpg).
+Write code with `...` or by adding a 4-whitespace indent to the paragraph.
+> This is a quote.
+
+LaTeX syntax
+------------
+This formula $x^2+1$ will be displayed inline.
+This formula $$x^2+1$$ will be displayed in a new paragraph.
+
+Specific syntax
+---------------
+\pagebreak will trigger a pagebreak when printing / exporting to PDF.
+
+About
+-----
+Made by <a href="https://twitter.com/JosephErnest">@JosephErnest</a>
+<a href="https://github.com/josephernest/writing">https://github.com/josephernest/writing</a>
+Uses <a href="https://code.google.com/archive/p/pagedown/">Pagedown</a>, <a href="https://github.com/jmcmanus/pagedown-extra">Pagedown Extra</a>, <a href="https://www.mathjax.org/">MathJax</a>, StackOverflow's <a href="https://gist.github.com/gdalgas/a652bce3a173ddc59f66">editor</a> code and the <a href="http://cm-unicode.sourceforge.net/">Computer Modern</a> font.
+</pre>
+    </div>
+
+    <script type="text/javascript" src="editor.js"></script>
+</body>
+
+</html>

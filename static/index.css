@@ -28,7 +28,7 @@ body {
   top: 0;
   overflow-x: hidden;
   padding-top: 20px;    right: 0;
-  background-color: red;
+  /* background-color: red; */
   margin: 0; 
   padding: 0;
 }
@@ -40,21 +40,21 @@ body {
   top: 0;
   overflow-x: hidden;
   padding-top: 20px;    right: 0;
-  background-color: green;
+  background-color: blue;
   margin: 0; 
   padding: 0;
 
 }
 
 .row2 {
-  height: ;
+  height: auto;
   width: 50%;
   position: fixed;
   top: 20px;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
   padding-top: 20px;    
   right: 0;
-  background-color: blue;
+  background-color: green;
   margin: 0; 
   padding: 0;
 
