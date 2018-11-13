@@ -38,7 +38,7 @@ body {
   width: 50%;
   position: fixed;
   top: 0;
-  overflow-x: hidden;
+  overflow: hidden;
   padding-top: 20px;    right: 0;
   background-color: blue;
   margin: 0; 
@@ -99,25 +99,4 @@ body {
 .centered img {
   width: 150px;
   border-radius: 50%;
-}
-
-.links {
-  stroke: #999;
-  stroke-opacity: 0.6;
-  stroke-width: 1px;
-}
-
-.nodes circle {
-  fill: #ddd;
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-.nodes circle.fixed {
-  fill: #f00;
-}
-textarea {
-  height: 100px;
-  width: 100%;
-}
-  
+}  

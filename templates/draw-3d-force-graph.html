@@ -1,11 +1,15 @@
-//<script src="./three.js"></script>
-//<script src="./three-spriteMathtJaxedText.min.js"></script>
-//<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-// <script src="https://unpkg.com/3d-force-graph"></script>
-// <script src="../../dist/3d-force-graph.js"></script> 
+<style>
+body {
+    overflow: hidden;
+}
+</style>
 
-// <div id="3d-graph"></div>
-//<script>
+<script type="text/javascript" src="{{ url_for('static', filename='three.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='three-spriteMathtJaxedText.min.js') }}"></script>
+<script src="{{ url_for('static', filename='3d-force-graph.min.js') }}"></script>
+
+<div id="3d-graph"></div>
+<script>
 const Graph = ForceGraph3D()
     (document.getElementById('3d-graph'))
     .jsonUrl('/graph')
@@ -29,5 +33,5 @@ const Graph = ForceGraph3D()
 // Spread nodes a little wider
 Graph.d3Force('charge').strength(-200);
 
-window.addEventListener("resize", Graph.width(window.innerWidth / 2).height(window.innerHeight));
-//</script>
+window.addEventListener("resize", Graph.width(window.innerWidth).height(window.innerHeight));
+</script>

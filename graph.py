@@ -123,6 +123,13 @@ def get_item(uuid):
 def editor():
     return render_template('editor.html')
 
+@app.route('/draw3dforce')
+def draw3dforce():
+    return render_template('draw-3d-force-graph.html')
+
+@app.route('/drawd3jsforce')
+def draw3djsforce():
+    return render_template('draw-d3js-force.html')
 
 if __name__ == '__main__':
     app.run(port=8080)
