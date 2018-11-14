@@ -19,25 +19,57 @@
     <!--  <script src="d3js-force.js"></script> -->
 
     <script>
+        // TODO: Nodes
+        // when selected - display contents
+        // 1. node: fixed/unfixed, selected/unselected
+        // 2. click node: unset other selection status and toggle selection 
+        // 3. shift+click node: keep other selection status and 
+        //      toggle selection status of this
+        // 4. control+click: toggle fix/unfix
+        // 5. delete key: remove nodes and attached links
+        // 6. double click: select and expand neiboring nodes and then toggle collaption of links of length one
+        // 7. click and drag: make a link and connect to other node
+        // 
+        // On links
+        // 1. select/unselect selected - display contents
+        // 2. delete - remove
+        //
+        // On background
+        // 1. double click - create and drop a new node
+
         var width;
         var height;
 
+        // d3.select(<selector:string>)
+        // Selects the first element that matches the specified selector string. https://github.com/d3/d3-selection#select
         var svg = d3.select("svg");
 
         //    width = +svg.attr("width"),
         //    height = +svg.attr("height"),
 
+        // var <intViewportWidth> = window.innerWidth;
+        // https://developer.mozilla.org/en-US/docs/Web/API/Window/innerWidth
         width = window.innerWidth;
         height = window.innerHeight;
+
+        // Scalable Vector Graphics (SVG) is an XML-based markup language for describing two dimensional based  vector graphics. SVG is essentially to graphics what HTML is to text. https://developer.mozilla.org/en-US/docs/Web/SVG
+        // SVG elements can be modified using attributes that specify details about exactly how the element should be handled or rendered. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute
+        // selection.attr(name[, value]) https://github.com/d3/d3-selection/blob/master/README.md#selection_attr WARNING: .attr(...) is a D3js method NOT a generic web API
         svg
             .attr("width", width)
             .attr("height", height);
+
         transform = d3.zoomIdentity;
+
+        // The <g> SVG element is a container used to group other SVG elements. Transformations applied to the <g> element are performed on all of its child elements, and any of its attributes are inherited by its child elements. It can also group multiple elements to be referenced later with the <use> element. https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g
 
         var g = svg.append("g");
 
+        // The call() method calls a function with a given this value and arguments provided individually. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+        //  d3.zoom() Creates a new zoom behavior. The returned behavior, zoom, is both an object and a function, and is typically applied to selected elements via selection.call. https://github.com/d3/d3-zoom#zoom
         svg.call(d3.zoom()
             .scaleExtent([1 / 10, 10])
+            // zoom.on(typenames[, listener]) https://github.com/d3/d3-zoom#zoom_on See https://developer.mozilla.org/en-US/docs/Web/Events#Standard_events for the list of event types
             .on("zoom", zoomed));
 
         function zoomed() {
@@ -49,9 +81,8 @@
 
         var simulation = d3.forceSimulation()
             .force("node", d3.forceCollide().iterations(1))
-            .force("link", d3.forceLink().id(function (d) {
-                return d.uuid
-            }).distance(40))
+            .force("link", d3.forceLink().id(d => d.uuid)
+                .distance(40))
             .force("charge", d3.forceManyBody().strength(-200).distanceMax(300))
             .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -76,10 +107,10 @@
             .attr('fill', '#999')
             .style('stroke', 'none');
 
-        d3.json("/graph", function (error, graph) {
+        d3.json("/graph", (error, graph) => {
             if (error) throw error;
             update(graph.links, graph.nodes);
-            window.addEventListener("resize", update);
+            // window.addEventListener("resize", update);
         });
 
         function update(links, nodes) {
@@ -88,7 +119,8 @@
             svg
                 .attr("width", width)
                 .attr("height", height);
-            simulation.force("center", d3.forceCenter(width / 2, height / 2));
+            simulation
+                .force("center", d3.forceCenter(width / 2, height / 2));
             link = link
                 .data(links)
                 .enter()
@@ -96,12 +128,12 @@
                 .attr("class", "links")
                 .attr('marker-end', 'url(#arrowhead)')
 
-            link.append("title")
-                .text(function (d) {
-                    return d.type;
-                });
+            link
+                .append("title")
+                .text(d => d.type);
 
-            edgepaths = g.selectAll(".edgepath")
+            edgepaths = g
+                .selectAll(".edgepath")
                 .data(links)
                 .enter()
                 .append('path')
@@ -109,85 +141,68 @@
                     'class': 'edgepath',
                     'fill-opacity': 0,
                     'stroke-opacity': 0,
-                    'id': function (d, i) {
-                        return 'edgepath' + i
-                    }
+                    'id': (d, i) => 'edgepath' + i
                 })
                 .style("pointer-events", "none");
 
-            edgelabels = g.selectAll(".edgelabel")
+            edgelabels = g
+                .selectAll(".edgelabel")
                 .data(links)
                 .enter()
                 .append('text')
                 .style("pointer-events", "none")
                 .attrs({
                     'class': 'edgelabel',
-                    'id': function (d, i) {
-                        return 'edgelabel' + i
-                    },
+                    'id': (d, i) => 'edgelabel' + i,
                     'font-size': 10,
                     'fill': '#aaa'
                 });
 
-            edgelabels.append('textPath')
-                .attr('xlink:href', function (d, i) {
-                    return '#edgepath' + i
-                })
+            edgelabels
+                .append('textPath')
+                .attr('href', (d, i) => '#edgepath' + i)
                 .style("text-anchor", "middle")
                 .style("pointer-events", "none")
                 .attr("startOffset", "50%")
-                .text(function (d) {
-                    return d.type;
-                });
+                .text(d => d.type);
 
             node = node
                 .data(nodes)
                 .enter().append("g");
 
-            var circles = node.append("circle")
-                .attr("id", function (d) {
-                    return "node-" + d.id;
-                })
+            var circles = node
+                .append("circle")
+                .attr("id", d => "node-" + d.id)
                 .attr("r", 30)
                 //.on("dblclick", function(d){ alert("node was double clicked"); })
                 .on("dblclick", dblclick)
                 .call(drag)
 
-            var clipPaths = node.append("clipPath")
-                .attr("id", function (d) {
-                    return "clip-" + d.id;
-                })
+            var clipPaths = node
+                .append("clipPath")
+                .attr("id", d => "clip-" + d.id)
                 .append("use")
-                .attr("xlink:href", function (d) {
-                    return "#node-" + d.id + "";
-                });
+                // originally, I had `.attr("xlink:href", ...);` but https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href says it's depreciated and use href instead https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/href
+                .attr("href", d => "#node-" + d.id + "");
 
-            var lables = node.append("text")
-                .attr("clip-path", function (d) {
-                    return "url(#clip-" + d.id + ")";
-                })
+            var lables = node
+                .append("text")
+                .attr("clip-path", d => "url(#clip-" + d.id + ")")
                 .attrs({
                     "font-family": "sans-serif",
                     "font-size": "10px",
                     "text-anchor": "middle"
                 })
                 .selectAll("tspan")
-                .data(function (d) {
-                    return d.name != null ? d.name.split(" ") : "";
-                })
+                .data(d => d.name != null ? d.name.split(" ") : "")
                 .enter().append("tspan")
                 .attr("x", 0)
-                .attr("y", function (d, i, nodes) {
-                    return 13 + (i - nodes.length / 2 - 0.5) * 10;
-                })
-                .text(function (d) {
-                    return d;
-                });
+                .attr("y", (d, i, nodes) => 13 + (i - nodes.length / 2 - 0.5) * 10)
+                .text(d => d);
 
-            node.append("title")
-                .text(function (d) {
-                    return d.name;
-                });
+            node
+                .append("title")
+                .text(d => d.name);
 
             simulation
                 .nodes(nodes)
@@ -200,29 +215,16 @@
 
         function ticked() {
             link
-                .attr("x1", function (d) {
-                    return d.source.x;
-                })
-                .attr("y1", function (d) {
-                    return d.source.y;
-                })
-                .attr("x2", function (d) {
-                    return d.target.x;
-                })
-                .attr("y2", function (d) {
-                    return d.target.y;
-                });
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y)
 
             node
-                .attr("transform", function (d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                })
+                .attr("transform", d => "translate(" + d.x + "," + d.y + ")")
 
-            edgepaths.attr('d', function (d) {
-                var path = 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
-                //console.log(d)
-                return path
-            });
+            edgepaths
+                .attr('d', d => 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y);
 
             edgelabels
                 .attr('transform', function (d, i) {
@@ -239,7 +241,7 @@
         }
 
         function dblclick(d) {
-            //d3.select(this).classed("fixed", false);
+            d3.select(this).classed("fixed", false);
             d.fx = null;
             d.fy = null;
         }
@@ -258,7 +260,7 @@
         }
 
         function dragended(d) {
-            //d3.select(this).classed("fixed", true);
+            d3.select(this).classed("fixed", true);
             if (!d3.event.active) simulation.alphaTarget(0);
             d.fx = d.x;
             d.fy = d.y;

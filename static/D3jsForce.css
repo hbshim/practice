@@ -16,6 +16,7 @@ body {
     stroke-width: 1.5px;
 }
 
-.nodes circle.fixed {
-    fill: #f00;
+.nodes fixed {
+    stroke: black;
+    stroke-width: 2px;
 }
