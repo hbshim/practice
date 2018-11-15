@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='D3jsForce.css') }}">
+    <link rel="stylesheet" href="static/D3jsForce.css">
     <style>
         body {
             margin: 0;
@@ -14,8 +14,8 @@
 <body>
     <svg></svg>
 
-    <script src="{{ url_for('static', filename='d3.v4.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='d3-selection-multi.v1.js') }}"></script>
+    <script src="static/d3.v4.min.js"></script>
+    <script src="static/d3-selection-multi.v1.js"></script>
     <!--  <script src="d3js-force.js"></script> -->
 
     <script>
@@ -110,7 +110,7 @@
             .style('stroke', 'none');
 
         // d3.json("/graph", (error, graph) => {
-            d3.json("graph.json", (error, graph) => {
+        d3.json("graph.json", (error, graph) => {
             if (error) throw error;
             update(graph.links, graph.nodes);
             // window.addEventListener("resize", update);
@@ -311,6 +311,13 @@
             d.fy = d3.event.y;
         }
 
+        // https://stackoverflow.com/questions/956719/number-of-elements-in-a-javascript-object
+        function countResults(temp) {
+            var count = 0;
+            temp.each(function (selectedNodes) {count = count + 1; });
+            return count;
+        }
+
         function dragended(d) {
             d3.select(this)
                 .classed("dragged", false);
@@ -319,16 +326,20 @@
             // small difference then clicked else dragged;
             if (-5 < x_difference && x_difference < 5 && -5 < y_difference && y_difference < 5) {
                 // REMOVE_START
+                // TODO: ###### Thu Nov 15 03:15:01 EST 2018
+                // Resolve click/double click/dragging
                 console.log("singleClicked");
-                // Working!!
-                // temp = document.querySelector(".selected");
                 temp = d3.selectAll('.circle.selected');
-                console.log
-                ( d => temp.fx );
+                console.log(temp);
+                console.log(countResults(temp));
 
-                if (temp) {
-
+                if (countResults(temp) !== 0) {
                     temp.classed("fucked", true);
+                    temp.each(function (selectedNodes) {
+                        selectedNodes.fx = null;
+                        selectedNodes.fy = null;
+                        console.log(selectedNodes);
+                    });
                     console.log("selected nodes exists");
                 } else {
                     console.log("no selected nodes");

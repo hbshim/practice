@@ -10,13 +10,21 @@ body {
     stroke-width: 1px;
 }
 
-.nodes circle {
+.circle {
     fill: #ddd;
     stroke: #fff;
     stroke-width: 1.5px;
 }
 
-.nodes fixed {
+.selected {
     stroke: black;
     stroke-width: 2px;
+}
+
+.dragged {
+    stroke: #FF9999;
+}
+
+.temped {
+    fill: red;
 }
